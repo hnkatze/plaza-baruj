@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import TourProgress from '../components/TourProgress.astro';
-import { site } from '../data/site';
+import { geo, hotel, images, site } from '../data/site';
 
 interface Props {
 	title: string;
@@ -9,10 +9,69 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+
+/**
+ * Every absolute URL on the page derives from site.url. While it is empty the
+ * site still works locally: canonical, og:url and the sitemap line are omitted
+ * instead of pointing somewhere wrong.
+ */
+const base = site.url.replace(/\/$/, '');
+const abs = (path: string) => (base ? `${base}${path}` : path);
+const canonical = base ? abs('/') : undefined;
+
+const postalAddress = {
+	'@type': 'PostalAddress',
+	addressLocality: site.locality,
+	addressRegion: site.region,
+	addressCountry: site.country,
+};
+
+const geoCoordinates = {
+	'@type': 'GeoCoordinates',
+	latitude: geo.lat,
+	longitude: geo.lng,
+};
+
+const plazaId = abs('/#plaza');
+
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'LocalBusiness',
+			'@id': plazaId,
+			name: site.name,
+			description: site.description,
+			url: canonical,
+			image: [images.fachada.src],
+			telephone: `+${site.whatsapp}`,
+			hasMap: site.mapsUrl,
+			address: postalAddress,
+			geo: geoCoordinates,
+		},
+		{
+			'@type': 'Hotel',
+			'@id': abs('/#hotel'),
+			name: hotel.nombre,
+			description: hotel.resumen,
+			url: canonical,
+			parentOrganization: { '@id': plazaId },
+			telephone: `+${site.whatsapp}`,
+			image: [images.cuarto1.src, images.cuarto2.src],
+			address: postalAddress,
+			geo: geoCoordinates,
+			amenityFeature: hotel.equipamiento.map((name) => ({
+				'@type': 'LocationFeatureSpecification',
+				name,
+				value: true,
+			})),
+		},
+	],
+};
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es-HN">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -22,12 +81,33 @@ const { title, description } = Astro.props;
 
 		<title>{title}</title>
 		<meta name="description" content={description} />
+		<meta name="robots" content="index, follow, max-image-preview:large" />
+		{canonical && <link rel="canonical" href={canonical} />}
+
+		<!-- Machine-readable entry points: markdown copy of the page + llms.txt index. -->
+		<link rel="alternate" type="text/markdown" href={abs('/index.md')} />
+		<link rel="describedby" type="text/plain" href={abs('/llms.txt')} />
+
+		<link rel="preconnect" href="https://cdn.flujoo.dev" crossorigin />
+
 		<meta property="og:type" content="website" />
 		<meta property="og:locale" content="es_HN" />
 		<meta property="og:site_name" content={site.name} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
+		{canonical && <meta property="og:url" content={canonical} />}
+		<meta property="og:image" content={images.fachada.src} />
+		<meta property="og:image:width" content={String(images.fachada.width)} />
+		<meta property="og:image:height" content={String(images.fachada.height)} />
+		<meta property="og:image:alt" content={images.fachada.alt} />
+
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={images.fachada.src} />
+
+		<script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+
 		<script is:inline>
 			document.documentElement.classList.add('js');
 		</script>

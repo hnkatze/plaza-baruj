@@ -55,6 +55,21 @@ utilities: `bg-sand`, `text-ink-soft`, `py-section`, `rounded-brand`.
 The `page` utility (`max-width` + responsive gutter + centering) is the shell every
 section uses instead of repeating container classes.
 
+## SEO and machine discovery
+
+- Every absolute URL derives from `site.url` in `src/data/site.ts`. While it is empty, the
+  canonical link, `og:url` and the sitemap line are omitted instead of pointing at a wrong
+  origin — set it once and they all switch on.
+- `src/layouts/Layout.astro` emits the title/description, Open Graph and Twitter tags, and a
+  schema.org `@graph`: `LocalBusiness` for the plaza plus `Hotel` for the upper floor, with
+  postal address, coordinates and `amenityFeature` per unit.
+- `/robots.txt`, `/llms.txt` and `/index.md` are generated from the same data, so they cannot
+  drift from the page. `llms.txt` follows spec v2 (llmstxt.org): H1, blockquote summary,
+  details, then H2 sections with link lists; the layout links both files with
+  `rel="describedby"` and `rel="alternate" type="text/markdown"`.
+- Location data was reverse-geocoded from the map pin: San Marcos, Ocotepeque, Honduras.
+  There is still no street address or sitemap integration (the latter needs `site.url`).
+
 ## Content status
 
 Everything textual comes from `src/data/site.ts`. Values tagged `TODO(content)`
@@ -71,6 +86,7 @@ are placeholders — the site is not ready to publish until they are replaced:
       shared bathroom, kitchen and living room inside that unit** (`hotel`).
 - [ ] Email and Instagram (`site.email`, `site.instagram`) — currently hidden because empty.
 - [ ] Domain and deployment target (no `git remote` is configured).
+- [ ] Set `site.url` to the final origin, then add `@astrojs/sitemap` and its `Sitemap:` line.
 
 Photography is served from `https://cdn.flujoo.dev/plaza-baru/` and declared in
 `images` inside `src/data/site.ts`. Each entry carries its own alt text and real

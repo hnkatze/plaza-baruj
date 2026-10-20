@@ -9,7 +9,8 @@
 const CDN = 'https://cdn.flujoo.dev/plaza-baru';
 
 /** Exact pin of the venue, as resolved from the shared Google Maps link. */
-const COORDS = '14.4146486,-88.9527101';
+export const geo = { lat: 14.4146486, lng: -88.9527101 } as const;
+const COORDS = `${geo.lat},${geo.lng}`;
 
 export interface Photo {
 	src: string;
@@ -45,6 +46,13 @@ export const images = {
 
 export interface SiteConfig {
 	name: string;
+	/** Canonical origin, e.g. "https://plazabaruj.com". Empty until the domain is chosen:
+	 *  canonical, og:url, sitemap and llms.txt links degrade to relative paths. */
+	url: string;
+	/** Municipality and department, reverse-geocoded from the map pin. */
+	locality: string;
+	region: string;
+	country: string;
 	/** First word of the wordmark, set small and letterspaced above the name. */
 	nameKicker: string;
 	/** The name itself, set large in the display face. */
@@ -71,11 +79,15 @@ export interface SiteConfig {
 
 export const site: SiteConfig = {
 	name: 'Plaza Baruj',
+	url: '',
+	locality: 'San Marcos',
+	region: 'Ocotepeque',
+	country: 'HN',
 	nameKicker: 'Plaza',
 	nameWord: 'Baruj',
 	tagline: 'Locales comerciales y hotel, bajo un mismo techo.',
 	description:
-		'Plaza Baruj reúne cinco locales comerciales en planta baja y cinco unidades de hotel en la segunda planta. Una sola dirección para comprar, atender clientes y hospedarse.',
+		'Plaza Baruj reúne cinco locales comerciales en planta baja y cinco unidades de hotel equipadas en la segunda planta, en San Marcos, Ocotepeque. Una sola dirección para comprar, atender clientes y hospedarse.',
 	whatsapp: '50496015933',
 	whatsappLabel: '+504 9601-5933',
 	email: '',
