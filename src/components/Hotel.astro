@@ -1,0 +1,125 @@
+---
+import { hotel, images, site } from '../data/site';
+
+const whatsappHref = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
+	'Hola, quiero consultar por el hotel de Plaza Baruj.',
+)}`;
+
+const habitaciones = [images.cuarto1, images.cuarto2];
+const cifras = [
+	`${hotel.unidades} unidades`,
+	`${hotel.habitacionesPorUnidad} habitaciones por unidad`,
+	'baño · cocina · sala',
+];
+---
+
+<section class="bg-green-deep py-section text-sand" id="hotel">
+	<div class="page">
+		<div
+			class="mb-[clamp(2.25rem,5vw,3.5rem)] grid items-end gap-x-12 gap-y-6 lg:grid-cols-2"
+			data-reveal
+		>
+			<div>
+				<p class="eyebrow text-gold">04 · Segunda planta</p>
+				<h2 class="text-[clamp(2.1rem,5vw,3.4rem)]">{hotel.nombre}</h2>
+			</div>
+			<p class="lede text-sand/75">{hotel.resumen}</p>
+		</div>
+
+		<ul
+			class="flex flex-wrap items-center gap-x-8 gap-y-2 border-y border-sand/20 py-4 text-[0.75rem] font-semibold uppercase tracking-[0.14em] text-sand/70"
+			data-reveal
+		>
+			{cifras.map((cifra) => <li>{cifra}</li>)}
+		</ul>
+
+		<div class="mt-[clamp(2rem,4vw,3rem)]" data-reveal>
+			<ul class="grid gap-[clamp(1rem,2.5vw,1.75rem)] sm:grid-cols-2">
+				{
+					habitaciones.map((foto, index) => (
+						<li>
+							<figure class="m-0">
+								<div class="overflow-hidden rounded-brand border border-sand/15">
+									<img
+										class="aspect-video w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+										src={foto.src}
+										alt={foto.alt}
+										width={foto.width}
+										height={foto.height}
+										loading="lazy"
+										decoding="async"
+									/>
+								</div>
+								<figcaption class="mt-3 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-gold">
+									Habitación {index + 1}
+								</figcaption>
+							</figure>
+						</li>
+					))
+				}
+			</ul>
+			<p class="mt-4 max-w-[52ch] text-[0.9rem] text-sand/60">
+				Las dos habitaciones de una unidad. Las cinco unidades repiten esta distribución.
+			</p>
+		</div>
+
+		<ul
+			class="mt-[clamp(2rem,4vw,3rem)] grid gap-7 border-t border-sand/20 pt-[clamp(2rem,4vw,3rem)] sm:grid-cols-2 lg:grid-cols-4"
+			data-reveal
+		>
+			{
+				hotel.distribucion.map((espacio) => (
+					<li>
+						<h4 class="mb-2 text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-gold">
+							{espacio.titulo}
+						</h4>
+						<p class="text-[0.9rem] text-sand/75">{espacio.detalle}</p>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="mt-[clamp(2rem,4vw,3rem)] border-t border-sand/20 pt-[clamp(2rem,4vw,3rem)]" data-reveal>
+			<h4 class="mb-3 text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-gold">
+				Equipamiento
+			</h4>
+			<ul class="flex flex-wrap gap-2">
+				{
+					hotel.equipamiento.map((item) => (
+						<li class="rounded-full border border-sand/25 px-4 py-1.5 text-[0.82rem] text-sand/85">
+							{item}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<ul class="mt-[clamp(2rem,4vw,3rem)] grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-reveal>
+			{
+				hotel.galeria.map((foto) => (
+					<li class="overflow-hidden rounded-brand border border-sand/15">
+						<img
+							class="aspect-video w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+							src={foto.src}
+							alt={foto.alt}
+							width={foto.width}
+							height={foto.height}
+							loading="lazy"
+							decoding="async"
+						/>
+					</li>
+				))
+			}
+		</ul>
+
+		<div
+			class="mt-[clamp(2rem,4vw,3rem)] flex flex-wrap items-center justify-between gap-5"
+			data-reveal
+		>
+			<p class="font-display text-[clamp(1.2rem,2.4vw,1.6rem)]">
+				¿Querés reservar o ver disponibilidad?
+			</p>
+			<a class="btn btn--light" href={whatsappHref}>Consultar disponibilidad</a>
+		</div>
+	</div>
+</section>

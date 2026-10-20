@@ -1,0 +1,142 @@
+@import 'tailwindcss';
+
+/* Design tokens exposed as Tailwind utilities (bg-sand, text-ink-soft, py-section, …). */
+@theme {
+	--font-display: georgia, 'Iowan Old Style', 'Times New Roman', serif;
+	--font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', roboto, helvetica, arial,
+		sans-serif;
+
+	--color-ink: #17150f;
+	--color-ink-soft: #4c463b;
+	--color-sand: #f7f2e9;
+	--color-sand-2: #efe7da;
+	--color-green: #21403a;
+	--color-green-deep: #162d28;
+	--color-terra: #a9552e;
+	--color-gold: #d9a878;
+
+	--spacing-section: clamp(4.5rem, 10vw, 8rem);
+	--spacing-gutter: clamp(1.25rem, 4vw, 3rem);
+
+	--radius-brand: 2px;
+	--container-page: 1160px;
+}
+
+/* Centered page shell: max width plus the responsive gutter. */
+@utility page {
+	width: 100%;
+	max-width: var(--container-page);
+	margin-inline: auto;
+	padding-inline: var(--spacing-gutter);
+}
+
+@layer base {
+	html {
+		scroll-behavior: smooth;
+		/* Keeps anchored sections below the sticky header instead of underneath it. */
+		scroll-padding-top: 4.75rem;
+		-webkit-text-size-adjust: 100%;
+	}
+
+	@media (max-width: 767px) {
+		/* Two-row header on small screens. */
+		html {
+			scroll-padding-top: 7rem;
+		}
+	}
+
+	body {
+		@apply bg-sand font-sans text-ink antialiased;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		@apply font-display font-normal;
+		line-height: 1.08;
+		letter-spacing: -0.015em;
+		text-wrap: balance;
+	}
+
+	p {
+		text-wrap: pretty;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-terra);
+		outline-offset: 3px;
+	}
+}
+
+@layer components {
+	.btn {
+		@apply inline-flex items-center justify-center gap-2.5 rounded-brand border border-transparent px-6 py-3.5 text-sm font-semibold tracking-[0.02em] no-underline transition;
+	}
+
+	.btn--solid {
+		@apply bg-green text-sand hover:-translate-y-px hover:bg-green-deep;
+	}
+
+	.btn--outline {
+		@apply border-ink/20 text-ink hover:-translate-y-px hover:border-ink;
+	}
+
+	.btn--light {
+		@apply bg-sand text-green-deep hover:-translate-y-px hover:bg-white;
+	}
+
+	.eyebrow {
+		@apply mb-5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-terra;
+	}
+
+	.lede {
+		@apply max-w-[58ch] text-[clamp(1.05rem,1.6vw,1.2rem)] text-ink-soft;
+	}
+
+	.skip-link {
+		@apply absolute left-[-9999px] top-0 z-100 rounded-br-brand bg-green-deep px-5 py-3 text-sand;
+	}
+
+	.skip-link:focus {
+		@apply left-0;
+	}
+}
+
+/* Scroll reveal: hidden only when the `js` class is present, so a page without
+   JavaScript still renders every section. */
+.js [data-reveal] {
+	opacity: 0;
+	transform: translateY(14px);
+	transition:
+		opacity 620ms ease,
+		transform 620ms ease;
+}
+
+.js [data-reveal].is-visible {
+	opacity: 1;
+	transform: none;
+}
+
+/* Tour progress: the current stop renders as a filled bar. */
+[data-tour-link][aria-current='step'] > span {
+	width: 1.5rem;
+	height: 2px;
+	background-color: var(--color-green);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	.js [data-reveal] {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	.btn:hover {
+		transform: none;
+	}
+}

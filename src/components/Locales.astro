@@ -1,0 +1,62 @@
+---
+import { locales, type LocalStatus } from '../data/site';
+
+const statusLabel: Record<LocalStatus, string> = {
+	disponible: 'Disponible',
+	ocupado: 'Ocupado',
+	'por-confirmar': 'Por confirmar',
+};
+
+// Static classes: Tailwind cannot see runtime-built class names.
+const statusClass: Record<LocalStatus, string> = {
+	disponible: 'border-green text-green',
+	ocupado: 'border-ink/20 text-ink-soft',
+	'por-confirmar': 'border-ink/20 text-ink-soft',
+};
+---
+
+<section class="py-section" id="locales">
+	<div class="page">
+		<div
+			class="mb-[clamp(2rem,5vw,3.5rem)] grid items-end gap-x-12 gap-y-6 lg:grid-cols-2"
+			data-reveal
+		>
+			<div>
+				<p class="eyebrow">03 · Planta baja</p>
+				<h2 class="text-[clamp(2.1rem,5vw,3.4rem)]">Cinco locales, cinco frentes a la calle.</h2>
+			</div>
+			<p class="lede">
+				Cada local tiene entrada directa desde la calle y comparte el flujo de la plaza: quien
+				viene a uno, pasa por todos.
+			</p>
+		</div>
+
+		<ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+			{
+				locales.map((local, index) => (
+					<li
+						class="flex min-h-48 flex-col gap-2.5 rounded-brand border border-ink/10 bg-sand p-[clamp(1.35rem,2.6vw,1.9rem)] transition-colors hover:border-ink/25 hover:bg-white"
+						data-reveal
+						style={`transition-delay:${index * 45}ms`}
+					>
+						<div class="mb-2 flex items-center justify-between gap-3">
+							<span class="font-display text-[1.05rem] text-terra">
+								{String(index + 1).padStart(2, '0')}
+							</span>
+							<span
+								class={`rounded-full border px-2.5 py-1 text-[0.66rem] font-semibold uppercase tracking-[0.12em] ${statusClass[local.status]}`}
+							>
+								{statusLabel[local.status]}
+							</span>
+						</div>
+						<h3 class="text-[1.3rem]">{local.nombre}</h3>
+						<p class="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+							{local.rubro}
+						</p>
+						<p class="mt-auto text-[0.9rem] text-ink-soft">{local.descripcion}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>

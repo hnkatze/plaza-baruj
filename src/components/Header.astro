@@ -1,0 +1,43 @@
+---
+import { site } from '../data/site';
+
+const nav = [
+	{ href: '#plaza', label: 'La Plaza' },
+	{ href: '#locales', label: 'Locales' },
+	{ href: '#hotel', label: 'Hotel' },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-ink/10 bg-sand/90 backdrop-blur-md">
+	<div class="page flex flex-wrap items-center gap-x-6 gap-y-3 py-3.5">
+		<a
+			class="mr-auto inline-flex flex-col leading-none no-underline"
+			href="#inicio"
+			aria-label={`${site.name}, ir al inicio`}
+		>
+			<span class="text-[0.5rem] font-semibold uppercase tracking-[0.34em] text-ink-soft">
+				{site.nameKicker}
+			</span>
+			<span class="mt-0.5 font-display text-[1.2rem] tracking-[-0.01em]">{site.nameWord}</span>
+		</a>
+
+		<nav class="order-3 w-full md:order-none md:w-auto" aria-label="Secciones del sitio">
+			<ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+				{
+					nav.map((item) => (
+						<li>
+							<a
+								class="whitespace-nowrap border-b border-transparent py-1 text-[0.86rem] uppercase tracking-[0.04em] text-ink-soft transition-colors hover:border-terra hover:text-ink"
+								href={item.href}
+							>
+								{item.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<a class="btn btn--solid px-5 py-2.5 text-[0.82rem]" href="#contacto">Consultar</a>
+	</div>
+</header>

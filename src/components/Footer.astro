@@ -1,0 +1,28 @@
+---
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-green-deep pt-[clamp(2.5rem,5vw,3.5rem)] pb-6 text-sand/80">
+	<div class="page flex flex-wrap items-start justify-between gap-8">
+		<div>
+			<span class="block text-[0.55rem] font-semibold uppercase tracking-[0.34em] text-sand/60">
+				{site.nameKicker}
+			</span>
+			<span class="mt-1 block font-display text-2xl text-sand">{site.nameWord}</span>
+			<p class="mt-1.5 max-w-[34ch] text-[0.9rem]">{site.tagline}</p>
+		</div>
+
+		<nav class="flex flex-wrap gap-5" aria-label="Enlaces del pie">
+			<a class="text-[0.8rem] uppercase tracking-[0.1em] no-underline hover:text-sand" href="#plaza">La Plaza</a>
+			<a class="text-[0.8rem] uppercase tracking-[0.1em] no-underline hover:text-sand" href="#locales">Locales</a>
+			<a class="text-[0.8rem] uppercase tracking-[0.1em] no-underline hover:text-sand" href="#hotel">Hotel</a>
+			<a class="text-[0.8rem] uppercase tracking-[0.1em] no-underline hover:text-sand" href="#contacto">Contacto</a>
+		</nav>
+	</div>
+
+	<div class="page mt-[clamp(2rem,4vw,3rem)] border-t border-sand/20 pt-5">
+		<p class="text-[0.78rem] text-sand/60">© {year} {site.name}. Todos los derechos reservados.</p>
+	</div>
+</footer>
