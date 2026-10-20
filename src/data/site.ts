@@ -46,8 +46,9 @@ export const images = {
 
 export interface SiteConfig {
 	name: string;
-	/** Canonical origin, e.g. "https://plazabaruj.com". Empty until the domain is chosen:
-	 *  canonical, og:url, sitemap and llms.txt links degrade to relative paths. */
+	/** Canonical origin, e.g. "https://plazabaruj.com".
+	 *  TODO(domain): still unchosen. While empty, canonical, og:url, the sitemap line
+	 *  and the absolute links in llms.txt degrade to relative paths on purpose. */
 	url: string;
 	/** Municipality and department, reverse-geocoded from the map pin. */
 	locality: string;
@@ -79,6 +80,7 @@ export interface SiteConfig {
 
 export const site: SiteConfig = {
 	name: 'Plaza Baruj',
+	// TODO(domain): set to the final origin once the domain is registered.
 	url: '',
 	locality: 'San Marcos',
 	region: 'Ocotepeque',

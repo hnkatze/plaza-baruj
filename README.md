@@ -38,13 +38,18 @@ src/
 │   ├── Header.astro
 │   ├── Hero.astro     # Includes the two-floor elevation diagram
 │   ├── Plaza.astro
-│   ├── Locales.astro  # Six commercial units
-│   ├── Hotel.astro    # Two rooms + amenities
+│   ├── Locales.astro  # The five commercial units
+│   ├── Hotel.astro    # The five units, two bedrooms each
 │   ├── Contacto.astro
+│   ├── TourProgress.astro  # Fixed floor-journey indicator
 │   └── Footer.astro
-├── data/site.ts       # All content and contact channels
+├── data/site.ts       # All content, contact channels and photos
+├── data/tour.ts       # The five stops of the guided route
 ├── layouts/Layout.astro
 ├── pages/index.astro
+├── pages/robots.txt.ts    # Generated
+├── pages/llms.txt.ts      # Generated
+├── pages/index.md.ts      # Markdown mirror of the page
 └── styles/global.css  # Tailwind entry: @theme tokens + @utility page + base layer
 ```
 
@@ -81,12 +86,14 @@ are placeholders — the site is not ready to publish until they are replaced:
       no street address yet, so the pin is shown instead of an invented address.
 - [x] Equipment confirmed by the owner: air conditioning, wifi, TV, hot water and
       parking (`hotel.equipamiento`).
+- [x] Hotel layout confirmed: five independent units, each with **two bedrooms plus one
+      bathroom, kitchen and living room inside that unit** (`hotel`).
 - [ ] Real name and category for each of the five units (`locales`).
-- [ ] Confirm the hotel layout: five independent units, **two bedrooms each plus one
-      shared bathroom, kitchen and living room inside that unit** (`hotel`).
 - [ ] Email and Instagram (`site.email`, `site.instagram`) — currently hidden because empty.
-- [ ] Domain and deployment target (no `git remote` is configured).
-- [ ] Set `site.url` to the final origin, then add `@astrojs/sitemap` and its `Sitemap:` line.
+- [ ] **TODO(domain)** — canonical origin not chosen yet. Until `site.url` is set, the site
+      intentionally ships without canonical, `og:url` or sitemap. When the domain exists:
+      set `site.url`, add `@astrojs/sitemap` and its `Sitemap:` line in `robots.txt`.
+- [ ] Deployment target (Vercel or Cloudflare Pages). The git remote is already configured.
 
 Photography is served from `https://cdn.flujoo.dev/plaza-baru/` and declared in
 `images` inside `src/data/site.ts`. Each entry carries its own alt text and real
