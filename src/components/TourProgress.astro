@@ -1,0 +1,109 @@
+---
+import { tourStops } from '../data/tour';
+
+const total = String(tourStops.length).padStart(2, '0');
+const first = tourStops[0];
+---
+
+<nav
+	aria-label="Recorrido por la planta"
+	class="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 xl:bottom-auto xl:left-5 xl:top-1/2 xl:-translate-x-0 xl:-translate-y-1/2"
+>
+	<div
+		class="flex items-center gap-3 rounded-full border border-ink/10 bg-sand/90 px-4 py-2 backdrop-blur-md xl:flex-col xl:gap-3 xl:rounded-brand xl:px-2.5 xl:py-4"
+	>
+		<span
+			data-tour-floor
+			class="whitespace-nowrap text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-ink-soft xl:[writing-mode:vertical-rl] xl:rotate-180"
+		>
+			{first.piso}
+		</span>
+
+		<ul class="flex items-center gap-2 xl:flex-col xl:gap-2.5">
+			{
+				tourStops.map((stop, index) => (
+					<li>
+						<a
+							href={`#${stop.id}`}
+							data-tour-link={stop.id}
+							data-tour-numero={stop.numero}
+							data-tour-piso={stop.piso}
+							aria-label={`${stop.numero} · ${stop.titulo}`}
+							aria-current={index === 0 ? 'step' : undefined}
+							class="flex h-4 w-6 items-center justify-center"
+						>
+							<span class="h-px w-4 bg-ink/25 transition-all duration-300" />
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<span data-tour-counter class="font-display text-[0.7rem] leading-none text-ink-soft">
+			{first.numero}/{total}
+		</span>
+	</div>
+</nav>
+
+<script>
+	const links = Array.from(
+		document.querySelectorAll<HTMLAnchorElement>('[data-tour-link]'),
+	);
+	const counter = document.querySelector<HTMLElement>('[data-tour-counter]');
+	const floor = document.querySelector<HTMLElement>('[data-tour-floor]');
+
+	if (links.length > 0 && counter && floor) {
+		const total = String(links.length).padStart(2, '0');
+		const sections = links
+			.map((link) => document.getElementById(link.dataset.tourLink ?? ''))
+			.filter((section): section is HTMLElement => section !== null);
+
+		let active = -1;
+
+		const setActive = (index: number) => {
+			if (index === active) return;
+			active = index;
+
+			links.forEach((link, position) => {
+				if (position === index) link.setAttribute('aria-current', 'step');
+				else link.removeAttribute('aria-current');
+			});
+
+			const link = links[index];
+			counter.textContent = `${link.dataset.tourNumero}/${total}`;
+			floor.textContent = link.dataset.tourPiso ?? '';
+		};
+
+		const update = () => {
+			// A stop becomes current once its top crosses the reading line.
+			const line = window.innerHeight * 0.38;
+			let index = 0;
+
+			sections.forEach((section, position) => {
+				if (section.getBoundingClientRect().top <= line) index = position;
+			});
+
+			// At the very bottom, the last stop is always current.
+			const atBottom =
+				window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+			if (atBottom) index = sections.length - 1;
+
+			setActive(index);
+		};
+
+		let queued = false;
+		const schedule = () => {
+			if (queued) return;
+			queued = true;
+			requestAnimationFrame(() => {
+				queued = false;
+				update();
+			});
+		};
+
+		window.addEventListener('scroll', schedule, { passive: true });
+		window.addEventListener('resize', schedule);
+		window.addEventListener('hashchange', schedule);
+		update();
+	}
+</script>
