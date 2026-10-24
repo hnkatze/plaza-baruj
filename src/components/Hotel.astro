@@ -17,13 +17,12 @@ const cifras = [
 	<div class="page">
 		<div
 			class="mb-[clamp(2.25rem,5vw,3.5rem)] grid items-end gap-x-12 gap-y-6 lg:grid-cols-2"
-			data-reveal
 		>
-			<div>
+			<div data-reveal style="--reveal-i: 0">
 				<p class="eyebrow text-gold">04 · Segunda planta</p>
 				<h2 class="text-[clamp(2.1rem,5vw,3.4rem)]">{hotel.nombre}</h2>
 			</div>
-			<p class="lede text-sand/75">{hotel.resumen}</p>
+			<p class="lede text-sand/75" data-reveal style="--reveal-i: 1">{hotel.resumen}</p>
 		</div>
 
 		<ul
@@ -39,7 +38,7 @@ const cifras = [
 					habitaciones.map((foto, index) => (
 						<li>
 							<figure class="m-0">
-								<div class="overflow-hidden rounded-brand border border-sand/15">
+								<div class="overflow-hidden rounded-card border border-sand/15">
 									<img
 										class="aspect-video w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
 										src={foto.src}
@@ -59,7 +58,7 @@ const cifras = [
 				}
 			</ul>
 			<p class="mt-4 max-w-[52ch] text-[0.9rem] text-sand/60">
-				Las dos habitaciones de una unidad. Las cinco unidades repiten esta distribución.
+				Las dos habitaciones de una unidad. Las {hotel.unidades} unidades repiten esta distribución.
 			</p>
 		</div>
 
@@ -81,7 +80,7 @@ const cifras = [
 
 		<div class="mt-[clamp(2rem,4vw,3rem)] border-t border-sand/20 pt-[clamp(2rem,4vw,3rem)]" data-reveal>
 			<h4 class="mb-3 text-[0.78rem] font-semibold uppercase tracking-[0.12em] text-gold">
-				Equipamiento
+				Dentro de cada unidad
 			</h4>
 			<ul class="flex flex-wrap gap-2">
 				{
@@ -97,7 +96,7 @@ const cifras = [
 		<ul class="mt-[clamp(2rem,4vw,3rem)] grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-reveal>
 			{
 				hotel.galeria.map((foto) => (
-					<li class="overflow-hidden rounded-brand border border-sand/15">
+					<li class="overflow-hidden rounded-card border border-sand/15 transition duration-500 hover:-translate-y-1 hover:border-sand/30 hover:shadow-[0_24px_48px_-30px_rgba(0,0,0,0.6)]">
 						<img
 							class="aspect-video w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
 							src={foto.src}

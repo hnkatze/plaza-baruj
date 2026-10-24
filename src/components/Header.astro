@@ -8,7 +8,7 @@ const nav = [
 ];
 ---
 
-<header class="sticky top-0 z-50 border-b border-ink/10 bg-sand/90 backdrop-blur-md">
+<header class="sticky top-0 z-50 border-b border-ink/10 bg-sand/90 backdrop-blur-md" data-header>
 	<div class="page flex flex-wrap items-center gap-x-6 gap-y-3 py-3.5">
 		<a
 			class="mr-auto inline-flex flex-col leading-none no-underline"
@@ -27,7 +27,7 @@ const nav = [
 					nav.map((item) => (
 						<li>
 							<a
-								class="whitespace-nowrap border-b border-transparent py-1 text-[0.86rem] uppercase tracking-[0.04em] text-ink-soft transition-colors hover:border-terra hover:text-ink"
+								class="link-draw whitespace-nowrap py-1 text-[0.86rem] uppercase tracking-[0.04em] text-ink-soft transition-colors hover:text-ink"
 								href={item.href}
 							>
 								{item.label}

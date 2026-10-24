@@ -1,40 +1,51 @@
 ---
-import { images, site } from '../data/site';
+import { hotel, images, locales, site } from '../data/site';
 ---
 
 <section
-	class="border-b border-ink/10 pt-[clamp(2.5rem,7vw,5.5rem)] pb-[clamp(3.5rem,8vw,6rem)]"
+	class="hero relative isolate overflow-hidden border-b border-ink/10 pt-[clamp(2.5rem,7vw,5.5rem)] pb-[clamp(3.5rem,8vw,6rem)]"
 	id="inicio"
 >
 	<div class="page grid items-center gap-[clamp(2.5rem,5vw,4rem)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
 		<div>
-			<p class="eyebrow">01 · La calle</p>
+			<p class="eyebrow" data-reveal style="--reveal-i: 0">01 · La calle</p>
 			<h1 class="mb-6">
-				<span class="block text-[0.72rem] font-semibold uppercase tracking-[0.5em] text-ink-soft">
-					{site.nameKicker}
+				<span class="hero-mask">
+					<span
+						class="block text-[0.72rem] font-semibold uppercase tracking-[0.5em] text-ink-soft"
+						style="--rise-i: 0"
+					>
+						{site.nameKicker}
+					</span>
 				</span>
-				<span
-					class="mt-1 block text-[clamp(3.2rem,9vw,6.5rem)] leading-[0.9] tracking-[-0.035em]"
-				>
-					{site.nameWord}
+				<span class="hero-mask">
+					<span
+						class="mt-1 block text-[clamp(3.4rem,10vw,7.5rem)] leading-[0.88] tracking-[-0.04em]"
+						style="--rise-i: 1"
+					>
+						{site.nameWord}
+					</span>
 				</span>
-				<span
-					class="mt-5 block max-w-[32ch] font-sans text-[clamp(0.95rem,1.7vw,1.15rem)] font-medium leading-normal tracking-normal text-ink-soft"
-				>
-					cinco locales abajo, cinco unidades arriba.
+				<span class="hero-mask">
+					<span
+						class="mt-5 block max-w-[32ch] font-sans text-[clamp(0.95rem,1.7vw,1.15rem)] font-medium leading-normal tracking-normal text-ink-soft"
+						style="--rise-i: 2"
+					>
+						{locales.length} locales abajo, {hotel.unidades} unidades arriba.
+					</span>
 				</span>
 			</h1>
-			<p class="lede">
+			<p class="lede" data-reveal style="--reveal-i: 2">
 				Una plaza de dos plantas en una sola dirección: el comercio ocurre en la calle y el
 				descanso, un piso más arriba.
 			</p>
-			<div class="mt-8 flex flex-wrap gap-3">
+			<div class="mt-8 flex flex-wrap gap-3" data-reveal style="--reveal-i: 3">
 				<a class="btn btn--solid" href="#hotel">Ver el hotel</a>
 				<a class="btn btn--outline" href="#locales">Ver los locales</a>
 			</div>
 		</div>
 
-		<figure class="m-0 overflow-hidden rounded-brand border border-ink/10 bg-sand-2">
+		<figure class="m-0 overflow-hidden rounded-card border border-ink/10 bg-sand-2" data-reveal style="--reveal-i: 2">
 			<img
 				class="aspect-video w-full object-cover"
 				src={images.fachada.src}

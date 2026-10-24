@@ -8,55 +8,89 @@ const statusLabel: Record<LocalStatus, string> = {
 };
 
 // Static classes: Tailwind cannot see runtime-built class names.
-const statusClass: Record<LocalStatus, string> = {
-	disponible: 'border-green text-green',
-	ocupado: 'border-ink/20 text-ink-soft',
-	'por-confirmar': 'border-ink/20 text-ink-soft',
+const statusDot: Record<LocalStatus, string> = {
+	disponible: 'bg-green',
+	ocupado: 'bg-ink/40',
+	'por-confirmar': 'bg-transparent ring-1 ring-inset ring-ink/35',
 };
+
+const PLACEHOLDER_RUBRO = 'Por confirmar';
+
+const pendientes = locales.filter((local) => local.status === 'por-confirmar').length;
+
+// Every placeholder card carries the same sentence, so it is printed once for the
+// whole deck instead of six times. Real per-local copy still renders on its card.
+const descripciones = new Set(locales.map((local) => local.descripcion));
+const descripcionComun = descripciones.size === 1 ? locales[0].descripcion : null;
 ---
 
 <section class="py-section" id="locales">
 	<div class="page">
 		<div
 			class="mb-[clamp(2rem,5vw,3.5rem)] grid items-end gap-x-12 gap-y-6 lg:grid-cols-2"
-			data-reveal
 		>
-			<div>
+			<div data-reveal style="--reveal-i: 0">
 				<p class="eyebrow">03 · Planta baja</p>
-				<h2 class="text-[clamp(2.1rem,5vw,3.4rem)]">Cinco locales, cinco frentes a la calle.</h2>
+				<h2 class="text-[clamp(2.1rem,5vw,3.4rem)]">
+					{locales.length} locales, una sola planta baja.
+				</h2>
 			</div>
-			<p class="lede">
+			<p class="lede" data-reveal style="--reveal-i: 1">
 				Cada local tiene entrada directa desde la calle y comparte el flujo de la plaza: quien
 				viene a uno, pasa por todos.
 			</p>
 		</div>
 
-		<ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+		<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-pulse-grid data-pulse-count="2" data-reveal>
 			{
 				locales.map((local, index) => (
 					<li
-						class="flex min-h-48 flex-col gap-2.5 rounded-brand border border-ink/10 bg-sand p-[clamp(1.35rem,2.6vw,1.9rem)] transition-colors hover:border-ink/25 hover:bg-white"
-						data-reveal
-						style={`transition-delay:${index * 45}ms`}
+						data-pulse-item
+						class="group relative flex min-h-[11.5rem] flex-col overflow-hidden rounded-card border border-ink/10 bg-sand p-[clamp(1.4rem,2.6vw,1.9rem)] transition duration-500 hover:-translate-y-1 hover:border-ink/25 hover:bg-white hover:shadow-[0_22px_46px_-32px_rgba(23,21,15,0.55)]"
 					>
-						<div class="mb-2 flex items-center justify-between gap-3">
-							<span class="font-display text-[1.05rem] text-terra">
-								{String(index + 1).padStart(2, '0')}
-							</span>
+						<span
+							aria-hidden="true"
+							class="pointer-events-none absolute -top-3 right-3 font-display text-[4.6rem] leading-none text-ink/[0.06] transition-colors duration-300 group-hover:text-terra/15"
+						>
+							{String(index + 1).padStart(2, '0')}
+						</span>
+
+						<div class="relative flex items-center gap-2">
 							<span
-								class={`rounded-full border px-2.5 py-1 text-[0.66rem] font-semibold uppercase tracking-[0.12em] ${statusClass[local.status]}`}
-							>
+								aria-hidden="true"
+								class={`size-1.5 shrink-0 rounded-full ${statusDot[local.status]}`}
+							/>
+							<span class="text-[0.64rem] font-semibold uppercase tracking-[0.15em] text-ink-soft">
 								{statusLabel[local.status]}
 							</span>
 						</div>
-						<h3 class="text-[1.3rem]">{local.nombre}</h3>
-						<p class="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-							{local.rubro}
-						</p>
-						<p class="mt-auto text-[0.9rem] text-ink-soft">{local.descripcion}</p>
+
+						<h3 class="relative mt-auto pt-8 text-[1.4rem] leading-tight">
+							{local.nombre}
+						</h3>
+						{local.rubro !== PLACEHOLDER_RUBRO && (
+							<p class="relative mt-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-terra">
+								{local.rubro}
+							</p>
+						)}
+
+						{local.descripcion !== descripcionComun && (
+							<p class="relative mt-4 text-[0.88rem] text-ink-soft">{local.descripcion}</p>
+						)}
 					</li>
 				))
 			}
 		</ul>
+
+		{
+			pendientes > 0 && (
+				<p class="mt-6 max-w-[64ch] text-[0.88rem] text-ink-soft">
+					{pendientes === locales.length
+						? `Todavía estamos confirmando la disponibilidad de los ${locales.length} locales: el estado de cada uno se actualiza acá a medida que el inquilino lo confirma.`
+						: `Estamos confirmando la disponibilidad de ${pendientes} de los ${locales.length} locales; el resto ya tiene estado confirmado.`}
+				</p>
+			)
+		}
 	</div>
 </section>
+

@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import TourProgress from '../components/TourProgress.astro';
-import { geo, hotel, images, site } from '../data/site';
+import { geo, hotel, images, servicios, site } from '../data/site';
 
 interface Props {
 	title: string;
@@ -48,6 +48,12 @@ const structuredData = {
 			hasMap: site.mapsUrl,
 			address: postalAddress,
 			geo: geoCoordinates,
+			amenityFeature: servicios.map((servicio) => ({
+				'@type': 'LocationFeatureSpecification',
+				name: servicio.titulo,
+				description: servicio.detalle,
+				value: true,
+			})),
 		},
 		{
 			'@type': 'Hotel',
@@ -135,6 +141,72 @@ const structuredData = {
 				);
 
 				targets.forEach((target) => observer.observe(target));
+			}
+		</script>
+
+		<script>
+			/**
+			 * Ambient pulse: a few elements of a grid light up on their own, reusing the
+			 * hover treatment. One timer per grid, only while that grid is on screen, and
+			 * none at all under `prefers-reduced-motion`. `data-pulse-count` sets how many
+			 * light up per tick (default 2).
+			 */
+			const TICK_MS = 1000;
+			const reducedPulse = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+			if (!reducedPulse.matches) {
+				document.querySelectorAll<HTMLElement>('[data-pulse-grid]').forEach((grid) => {
+					const items = Array.from(grid.querySelectorAll<HTMLElement>('[data-pulse-item]'));
+					if (items.length === 0) return;
+
+					const perTick = Math.max(1, Number(grid.dataset.pulseCount) || 2);
+					let timer: number | undefined;
+					let lit: HTMLElement[] = [];
+
+					const clear = () => {
+						lit.forEach((item) => item.removeAttribute('data-pulse'));
+						lit = [];
+					};
+
+					const pulse = () => {
+						clear();
+						const picks = new Set<HTMLElement>();
+						while (picks.size < Math.min(perTick, items.length)) {
+							picks.add(items[Math.floor(Math.random() * items.length)]!);
+						}
+						picks.forEach((item) => item.setAttribute('data-pulse', ''));
+						lit = [...picks];
+					};
+
+					const observer = new IntersectionObserver(
+						(entries) => {
+							const visible = entries.some((entry) => entry.isIntersecting);
+
+							if (visible && timer === undefined) {
+								pulse();
+								timer = window.setInterval(pulse, TICK_MS);
+							} else if (!visible && timer !== undefined) {
+								window.clearInterval(timer);
+								timer = undefined;
+								clear();
+							}
+						},
+						{ threshold: 0.2 },
+					);
+
+					observer.observe(grid);
+				});
+			}
+		</script>
+
+		<script>
+			/* Sticky header: gains a soft shadow once the page has scrolled. */
+			const header = document.querySelector('[data-header]');
+
+			if (header) {
+				const sync = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+				sync();
+				window.addEventListener('scroll', sync, { passive: true });
 			}
 		</script>
 	</body>

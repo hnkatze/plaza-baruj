@@ -19,6 +19,10 @@
 	--spacing-gutter: clamp(1.25rem, 4vw, 3rem);
 
 	--radius-brand: 2px;
+	/* Softer radius reserved for content cards: the brand shell stays sharp. */
+	--radius-card: 1.15rem;
+	/* Actions follow the card radius so the page keeps a single softness. */
+	--radius-btn: 1.15rem;
 	--container-page: 1160px;
 }
 
@@ -71,19 +75,69 @@
 
 @layer components {
 	.btn {
-		@apply inline-flex items-center justify-center gap-2.5 rounded-brand border border-transparent px-6 py-3.5 text-sm font-semibold tracking-[0.02em] no-underline transition;
+		@apply inline-flex items-center justify-center gap-2.5 rounded-btn border border-transparent px-6 py-3.5 text-sm font-semibold tracking-[0.02em] no-underline;
+		transition:
+			transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+			background-color 260ms ease,
+			border-color 260ms ease,
+			color 260ms ease,
+			box-shadow 260ms ease;
+	}
+
+	.btn:hover {
+		transform: translateY(-2px);
+	}
+
+	.btn:active {
+		transform: translateY(0);
+		transition-duration: 80ms;
 	}
 
 	.btn--solid {
-		@apply bg-green text-sand hover:-translate-y-px hover:bg-green-deep;
+		@apply bg-green text-sand hover:bg-green-deep;
+	}
+
+	.btn--solid:hover {
+		box-shadow: 0 16px 30px -18px rgb(23 21 15 / 0.65);
 	}
 
 	.btn--outline {
-		@apply border-ink/20 text-ink hover:-translate-y-px hover:border-ink;
+		@apply border-ink/20 text-ink hover:border-ink;
+	}
+
+	.btn--outline:hover {
+		background-color: color-mix(in srgb, var(--color-ink) 4%, transparent);
 	}
 
 	.btn--light {
-		@apply bg-sand text-green-deep hover:-translate-y-px hover:bg-white;
+		@apply bg-sand text-green-deep hover:bg-white;
+	}
+
+	.btn--light:hover {
+		box-shadow: 0 16px 30px -18px rgb(0 0 0 / 0.5);
+	}
+
+	/* Link with an underline that draws itself in, used by the header, the footer
+	   and the contact rows. currentColor keeps it legible on light and dark. */
+	.link-draw {
+		@apply relative no-underline;
+	}
+
+	.link-draw::after {
+		content: '';
+		position: absolute;
+		inset-inline: 0;
+		bottom: -3px;
+		height: 1px;
+		background-color: currentColor;
+		transform: scaleX(0);
+		transform-origin: left center;
+		transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.link-draw:hover::after,
+	.link-draw:focus-visible::after {
+		transform: scaleX(1);
 	}
 
 	.eyebrow {
@@ -104,13 +158,15 @@
 }
 
 /* Scroll reveal: hidden only when the `js` class is present, so a page without
-   JavaScript still renders every section. */
+   JavaScript still renders every section. `--reveal-i` staggers siblings that
+   reveal together (0, 1, 2…) without touching the observer. */
 .js [data-reveal] {
 	opacity: 0;
 	transform: translateY(14px);
 	transition:
-		opacity 620ms ease,
-		transform 620ms ease;
+		opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+		transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+	transition-delay: calc(var(--reveal-i, 0) * 90ms);
 }
 
 .js [data-reveal].is-visible {
@@ -125,6 +181,77 @@
 	background-color: var(--color-green);
 }
 
+/* Ambient pulse shared by the building diagram and the locals grid: the same
+   treatment as :hover, driven by the attribute the script toggles. Deliberately
+   unlayered, so it outranks the utility classes. Each surface can retint it
+   through the --pulse-* variables. */
+[data-pulse] {
+	transform: translateY(-4px);
+	border-color: var(--pulse-border, color-mix(in srgb, var(--color-ink) 25%, transparent));
+	background-color: var(--pulse-bg, #fff);
+	box-shadow: 0 22px 46px -32px var(--pulse-shadow, rgb(23 21 15 / 0.55));
+}
+
+/* Hotel units: they lighten toward green instead of turning white. */
+.pulse-dark {
+	--pulse-bg: color-mix(in srgb, var(--color-green) 78%, #fff);
+	--pulse-shadow: rgb(0 0 0 / 0.5);
+}
+
+/* Hero: the wordmark rises from behind a mask on load. The padding/margin pair
+   keeps the descender of the `j` from being clipped by the mask. */
+.hero-mask {
+	display: block;
+	overflow: hidden;
+	padding-bottom: 0.12em;
+	margin-bottom: -0.12em;
+}
+
+.hero-mask > span {
+	display: block;
+	animation: hero-rise 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation-delay: calc(var(--rise-i, 0) * 120ms);
+}
+
+@keyframes hero-rise {
+	from {
+		transform: translateY(105%);
+	}
+
+	to {
+		transform: none;
+	}
+}
+
+/* Warm halo behind the hero, so the top of the page has depth without a photo. */
+.hero::before {
+	content: '';
+	position: absolute;
+	z-index: -10;
+	top: -30%;
+	right: -12%;
+	width: min(820px, 92vw);
+	aspect-ratio: 1;
+	background: radial-gradient(
+		circle,
+		color-mix(in srgb, var(--color-gold) 30%, transparent) 0%,
+		transparent 66%
+	);
+	pointer-events: none;
+}
+
+/* Sticky header: a soft shadow appears as soon as the page leaves the top. */
+[data-header] {
+	transition:
+		box-shadow 300ms ease,
+		background-color 300ms ease;
+}
+
+[data-header][data-scrolled] {
+	box-shadow: 0 14px 32px -26px rgb(23 21 15 / 0.7);
+	background-color: color-mix(in srgb, var(--color-sand) 96%, transparent);
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html {
 		scroll-behavior: auto;
@@ -137,6 +264,14 @@
 	}
 
 	.btn:hover {
+		transform: none;
+	}
+
+	.hero-mask > span {
+		animation: none;
+	}
+
+	[data-pulse] {
 		transform: none;
 	}
 }
