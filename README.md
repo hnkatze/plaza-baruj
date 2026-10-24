@@ -1,6 +1,6 @@
 # Plaza Baruj
 
-One-page landing for Plaza Baruj: five commercial units on the ground floor and
+One-page landing for Plaza Baruj: six commercial units on the ground floor and
 five hotel units on the second floor (two bedrooms each, plus bathroom, kitchen
 and living room), under a single address.
 
@@ -38,7 +38,7 @@ src/
 │   ├── Header.astro
 │   ├── Hero.astro     # Includes the two-floor elevation diagram
 │   ├── Plaza.astro
-│   ├── Locales.astro  # The five commercial units
+│   ├── Locales.astro  # The six commercial units
 │   ├── Hotel.astro    # The five units, two bedrooms each
 │   ├── Contacto.astro
 │   ├── TourProgress.astro  # Fixed floor-journey indicator
@@ -84,11 +84,15 @@ are placeholders — the site is not ready to publish until they are replaced:
 - [x] WhatsApp: +504 9601-5933 (`site.whatsapp`, digits only for the `wa.me` link).
 - [x] Location: Google Maps pin at 14.4146486, -88.9527101 (`site.mapsUrl`); there is
       no street address yet, so the pin is shown instead of an invented address.
-- [x] Equipment confirmed by the owner: air conditioning, wifi, TV, hot water and
-      parking (`hotel.equipamiento`).
+- [x] Ground floor: **six** commercial units (`locales`).
+- [x] Equipment confirmed by the owner: air conditioning, wifi, TV and hot water inside
+      every unit (`hotel.equipamiento`). Buildings-wide services live in `servicios`:
+      24-hour water, generator, electronic card entry, parking at the front and side
+      with a perimeter fence, washing machine and dryer, and a social area on the
+      second floor.
 - [x] Hotel layout confirmed: five independent units, each with **two bedrooms plus one
       bathroom, kitchen and living room inside that unit** (`hotel`).
-- [ ] Real name and category for each of the five units (`locales`).
+- [ ] Real name and category for each of the six ground-floor units (`locales`).
 - [ ] Email and Instagram (`site.email`, `site.instagram`) — currently hidden because empty.
 - [ ] **TODO(domain)** — canonical origin not chosen yet. Until `site.url` is set, the site
       intentionally ships without canonical, `og:url` or sitemap. When the domain exists:

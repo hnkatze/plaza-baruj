@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { geo, hotel, images, locales, site } from '../data/site';
+import { geo, hotel, images, locales, servicios, site } from '../data/site';
 
 /**
  * Markdown mirror of the landing page, as recommended by the llms.txt spec
@@ -28,11 +28,17 @@ export const GET: APIRoute = () => {
 
 ## La plaza
 
-Dos plantas, dos formas de usar la misma dirección. En la planta baja, cinco locales comerciales abiertos a la calle. En la segunda planta, el hotel: un piso de distancia entre el comercio y el descanso.
+Dos plantas, dos formas de usar la misma dirección. En la planta baja, ${locales.length} locales comerciales abiertos a la calle. En la segunda planta, el hotel: un piso de distancia entre el comercio y el descanso.
 
-- 05 locales comerciales en planta baja
-- 05 unidades de hotel en la segunda planta
-- 02 habitaciones dentro de cada unidad
+- ${String(locales.length).padStart(2, '0')} locales comerciales en planta baja
+- ${String(hotel.unidades).padStart(2, '0')} unidades de hotel en la segunda planta
+- ${String(hotel.habitacionesPorUnidad).padStart(2, '0')} habitaciones dentro de cada unidad
+
+### Servicios del edificio
+
+Compartidos por los locales y el hotel, no por unidad:
+
+${servicios.map((servicio) => `- **${servicio.titulo}**: ${servicio.detalle}`).join('\n')}
 
 ## Los locales
 
@@ -42,11 +48,11 @@ ${localesMd}
 
 ${hotel.resumen}
 
-Las cinco unidades repiten la misma distribución:
+Las ${hotel.unidades} unidades repiten la misma distribución:
 
 ${hotel.distribucion.map((space) => `- **${space.titulo}**: ${space.detalle}`).join('\n')}
 
-Equipamiento en cada unidad: ${hotel.equipamiento.join(', ')}.
+Equipamiento dentro de cada unidad: ${hotel.equipamiento.join(', ')}.
 
 ### Habitaciones
 

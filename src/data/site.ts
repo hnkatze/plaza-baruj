@@ -89,7 +89,7 @@ export const site: SiteConfig = {
 	nameWord: 'Baruj',
 	tagline: 'Locales comerciales y hotel, bajo un mismo techo.',
 	description:
-		'Plaza Baruj reúne cinco locales comerciales en planta baja y cinco unidades de hotel equipadas en la segunda planta, en San Marcos, Ocotepeque. Una sola dirección para comprar, atender clientes y hospedarse.',
+		'Plaza Baruj reúne seis locales comerciales en planta baja y cinco unidades de hotel equipadas en la segunda planta, en San Marcos, Ocotepeque. Una sola dirección para comprar, atender clientes y hospedarse.',
 	whatsapp: '50496015933',
 	whatsappLabel: '+504 9601-5933',
 	email: '',
@@ -111,7 +111,7 @@ export interface Local {
 }
 
 // TODO(content): replace every entry with the real tenant name and category.
-export const locales: Local[] = Array.from({ length: 5 }, (_, index) => {
+export const locales: Local[] = Array.from({ length: 6 }, (_, index) => {
 	const number = String(index + 1).padStart(2, '0');
 	return {
 		slug: `local-${number}`,
@@ -126,6 +126,38 @@ export interface Space {
 	titulo: string;
 	detalle: string;
 }
+
+/**
+ * Services shared by the whole building, confirmed by the owner (2026-10).
+ * They belong to the plaza, not to an individual hotel unit: keep them out of
+ * `hotel.equipamiento` so the page never promises them inside a unit.
+ */
+export const servicios: Space[] = [
+	{
+		titulo: 'Agua las 24 horas',
+		detalle: 'El edificio tiene suministro de agua disponible todo el día.',
+	},
+	{
+		titulo: 'Generador',
+		detalle: 'Respaldo eléctrico propio para el edificio.',
+	},
+	{
+		titulo: 'Acceso con tarjeta',
+		detalle: 'Las entradas se abren con tarjeta electrónica.',
+	},
+	{
+		titulo: 'Parqueo al frente y al costado',
+		detalle: 'Estacionamiento en la parte de enfrente y a un costado, con cerco perimetral.',
+	},
+	{
+		titulo: 'Lavadora y secadora',
+		detalle: 'Acceso a lavandería dentro del edificio.',
+	},
+	{
+		titulo: 'Área social',
+		detalle: 'Espacio común en la segunda planta, aparte de la sala de cada unidad.',
+	},
+];
 
 export const hotel = {
 	nombre: 'Hotel Plaza Baruj',
@@ -142,14 +174,12 @@ export const hotel = {
 		{ titulo: 'Cocina', detalle: 'Equipada, integrada a la sala.' },
 		{ titulo: 'Sala', detalle: 'Área de estar que conecta habitaciones y cocina.' },
 	] satisfies Space[],
-	/** Confirmed by the owner (2026-10): services included with every unit. */
-	equipamiento: [
-		'Aire acondicionado',
-		'Wifi',
-		'TV',
-		'Agua caliente',
-		'Parqueo',
-	],
+	/**
+	 * Confirmed by the owner (2026-10): services included inside every unit.
+	 * Building-wide services (generator, water, parking, laundry, social area) live
+	 * in `servicios` instead, because they are shared and not part of a unit.
+	 */
+	equipamiento: ['Aire acondicionado', 'Wifi', 'TV', 'Agua caliente'],
 	galeria: [
 		images.salaEntrada,
 		images.salaCocina,
