@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { geo, hotel, images, locales, servicios, site } from '../data/site';
+import { geo, hotel, images, locales, localesGaleria, servicios, site } from '../data/site';
 
 /**
  * Markdown mirror of the landing page, as recommended by the llms.txt spec
@@ -43,6 +43,10 @@ ${servicios.map((servicio) => `- **${servicio.titulo}**: ${servicio.detalle}`).j
 ## Los locales
 
 ${localesMd}
+
+### Fotos de los locales
+
+${localesGaleria.map((photo) => `![${photo.alt}](${photo.src})`).join('\n\n')}
 
 ## El hotel
 

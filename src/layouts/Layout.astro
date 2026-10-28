@@ -209,5 +209,87 @@ const structuredData = {
 				window.addEventListener('scroll', sync, { passive: true });
 			}
 		</script>
+
+		<script>
+			/**
+			 * Hero carousel: crossfades the lead photos. It holds while the pointer or the
+			 * keyboard is inside the frame, pauses when the hero leaves the viewport or the
+			 * tab goes hidden, never starts under `prefers-reduced-motion`, and hands
+			 * control over for good once a dot is clicked — those dots are also the stop
+			 * mechanism that autoplaying content is required to offer.
+			 */
+			const SLIDE_MS = 5200;
+			const carousel = document.querySelector<HTMLElement>('[data-hero-carousel]');
+			const reducedSlides = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+			if (carousel) {
+				const slides = Array.from(carousel.querySelectorAll<HTMLElement>('[data-hero-slide]'));
+				const dots = Array.from(carousel.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
+				const caption = carousel.querySelector<HTMLElement>('[data-hero-caption]');
+
+				let index = 0;
+				let timer: number | undefined;
+				let held = false;
+				let stopped = false;
+				let onScreen = true;
+
+				const show = (next: number) => {
+					index = (next + slides.length) % slides.length;
+
+					slides.forEach((slide, i) => {
+						const active = i === index;
+						slide.classList.toggle('is-active', active);
+						slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+					});
+
+					dots.forEach((dot, i) => dot.setAttribute('aria-current', i === index ? 'true' : 'false'));
+
+					if (caption) caption.textContent = dots[index]?.dataset.caption ?? '';
+				};
+
+				const sync = () => {
+					if (timer !== undefined) {
+						window.clearInterval(timer);
+						timer = undefined;
+					}
+
+					const canRun = !stopped && !held && onScreen && !document.hidden && !reducedSlides.matches;
+					if (canRun && slides.length > 1) {
+						timer = window.setInterval(() => show(index + 1), SLIDE_MS);
+					}
+				};
+
+				dots.forEach((dot, i) => {
+					dot.addEventListener('click', () => {
+						stopped = true;
+						show(i);
+						sync();
+					});
+				});
+
+				const hold = (value: boolean) => () => {
+					held = value;
+					sync();
+				};
+
+				carousel.addEventListener('pointerenter', hold(true));
+				carousel.addEventListener('pointerleave', hold(false));
+				carousel.addEventListener('focusin', hold(true));
+				carousel.addEventListener('focusout', hold(false));
+				document.addEventListener('visibilitychange', sync);
+
+				if ('IntersectionObserver' in window) {
+					new IntersectionObserver(
+						(entries) => {
+							onScreen = entries.some((entry) => entry.isIntersecting);
+							sync();
+						},
+						{ threshold: 0.15 },
+					).observe(carousel);
+				}
+
+				sync();
+			}
+		</script>
 	</body>
 </html>

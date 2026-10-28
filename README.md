@@ -92,6 +92,13 @@ are placeholders — the site is not ready to publish until they are replaced:
       second floor.
 - [x] Hotel layout confirmed: five independent units, each with **two bedrooms plus one
       bathroom, kitchen and living room inside that unit** (`hotel`).
+- [x] Ground-floor photos (2026-10): the gallery in section 03 shows the two facade shots
+      from the hero (`galeriaFachadas`) plus the four unit photos (`localesGaleria`, derived
+      from `locales[].foto`); every tile opens a lightbox. The cards themselves stay
+      text-only. The mapping of photo to unit is **provisional**;
+      `local-frente-balcon-2.jpeg` is a near-duplicate of `local-frente-balcon.jpeg` and is
+      not published.
+- [ ] A photo for locals 05 and 06, and confirmation of which photo belongs to which unit.
 - [ ] Real name and category for each of the six ground-floor units (`locales`).
 - [ ] Email and Instagram (`site.email`, `site.instagram`) — currently hidden because empty.
 - [ ] **TODO(domain)** — canonical origin not chosen yet. Until `site.url` is set, the site
@@ -101,5 +108,7 @@ are placeholders — the site is not ready to publish until they are replaced:
 
 Photography is served from `https://cdn.flujoo.dev/plaza-baru/` and declared in
 `images` inside `src/data/site.ts`. Each entry carries its own alt text and real
-dimensions (all 16:9), so swap a file by editing that map only — no component knows
-file names.
+dimensions, so swap a file by editing that map only — no component knows file
+names. The hotel photos sit at the bucket root (16:9); the ground-floor photos of
+2026-10 live in `locales/` and are 4:3 or 3:4, cropped by `object-cover` inside the
+gallery tiles.

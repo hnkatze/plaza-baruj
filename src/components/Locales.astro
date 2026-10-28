@@ -1,5 +1,5 @@
 ---
-import { locales, type LocalStatus } from '../data/site';
+import { galeriaFachadas, locales, localesGaleria, type LocalStatus } from '../data/site';
 
 const statusLabel: Record<LocalStatus, string> = {
 	disponible: 'Disponible',
@@ -15,13 +15,23 @@ const statusDot: Record<LocalStatus, string> = {
 };
 
 const PLACEHOLDER_RUBRO = 'Por confirmar';
+// The gallery reads the building first and the units second: the facade shots span
+// two columns, the unit shots one each.
+const galeria = [
+	...galeriaFachadas.map((foto) => ({
+		foto,
+		cols: 'sm:col-span-2',
+		aspect: 'aspect-[4/3]',
+	})),
+	...localesGaleria.map((foto) => ({ foto, cols: '', aspect: 'aspect-[3/4]' })),
+];
 
 const pendientes = locales.filter((local) => local.status === 'por-confirmar').length;
 
 // Every placeholder card carries the same sentence, so it is printed once for the
 // whole deck instead of six times. Real per-local copy still renders on its card.
 const descripciones = new Set(locales.map((local) => local.descripcion));
-const descripcionComun = descripciones.size === 1 ? locales[0].descripcion : null;
+const descripcionComun = descripciones.size === 1 ? locales[0]?.descripcion : null;
 ---
 
 <section class="py-section" id="locales">
@@ -91,6 +101,74 @@ const descripcionComun = descripciones.size === 1 ? locales[0].descripcion : nul
 				</p>
 			)
 		}
+
+		<div class="mt-[clamp(2.5rem,5vw,4rem)]" data-reveal>
+			<h3 class="eyebrow">Cómo se entrega un local</h3>
+			<p class="lede mb-6">
+				La planta baja tal como está hoy: la fachada desde la calle y los locales vacíos,
+				con el piso, las paredes y el baño terminados. Tocá una foto para verla en grande.
+			</p>
+			<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+				{
+					galeria.map(({ foto, cols, aspect }) => (
+						<li class={cols}>
+							<button
+								type="button"
+								class="group/photo block w-full cursor-zoom-in overflow-hidden rounded-card border border-ink/10 bg-sand-2 transition duration-500 hover:border-ink/25 hover:shadow-[0_22px_46px_-32px_rgba(23,21,15,0.55)]"
+								data-lightbox
+								data-foto-src={foto.src}
+								data-foto-alt={foto.alt}
+								aria-label={`Ver en grande: ${foto.alt}`}
+							>
+								<img
+									class={`${aspect} w-full object-cover transition-transform duration-500 group-hover/photo:scale-[1.02]`}
+									src={foto.src}
+									alt={foto.alt}
+									width={foto.width}
+									height={foto.height}
+									loading="lazy"
+									decoding="async"
+								/>
+							</button>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<dialog class="lightbox" data-lightbox-dialog aria-label="Foto del local">
+			<img data-lightbox-img src={galeria[0]?.foto.src} alt="" width="1600" height="1200" />
+			<form method="dialog">
+				<button class="lightbox-close" aria-label="Cerrar la foto">Cerrar</button>
+			</form>
+		</dialog>
 	</div>
 </section>
 
+<script>
+	/* Local gallery lightbox: a native <dialog>, so Esc, the focus trap and the
+	   return of focus to the tile come from the platform. */
+	const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+	const dialogImg = dialog?.querySelector<HTMLImageElement>('[data-lightbox-img]');
+
+	if (dialog && dialogImg) {
+		document.querySelectorAll<HTMLButtonElement>('[data-lightbox]').forEach((trigger) => {
+			trigger.addEventListener('click', () => {
+				dialogImg.src = trigger.dataset.fotoSrc ?? '';
+				dialogImg.alt = trigger.dataset.fotoAlt ?? '';
+				document.documentElement.classList.add('is-locked');
+				dialog.showModal();
+			});
+		});
+
+		dialog.addEventListener('close', () => {
+			document.documentElement.classList.remove('is-locked');
+		});
+
+		// A click on the backdrop lands on the dialog itself; the image and the
+		// button do not bubble up to it.
+		dialog.addEventListener('click', (event) => {
+			if (event.target === dialog) dialog.close();
+		});
+	}
+</script>

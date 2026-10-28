@@ -223,6 +223,83 @@
 	}
 }
 
+/* Hero carousel: the slides are stacked and only the active one is opaque, so
+   the change is a crossfade. `--slide-opacity` is also what the reduced-motion
+   block switches off. */
+.hero-slides {
+	position: relative;
+}
+
+.hero-slide {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	transition: opacity var(--slide-fade, 900ms) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-slide.is-active {
+	opacity: 1;
+}
+
+/* Local gallery lightbox: a native <dialog>, so the top layer, Esc and the focus
+   trap are the platform's. The backdrop click closes it from the script. */
+.lightbox {
+	/* Preflight zeroes the UA `margin: auto`, so the dialog has to be centered
+	   explicitly; `inset: 0` plus `margin: auto` against a fit-content box does it. */
+	position: fixed;
+	inset: 0;
+	margin: auto;
+	width: fit-content;
+	max-width: min(1040px, 92vw);
+	height: fit-content;
+	max-height: 92vh;
+	padding: 0;
+	border: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
+	border-radius: var(--radius-card);
+	background: var(--color-sand-2);
+	overflow: hidden;
+	box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.65);
+}
+
+.lightbox::backdrop {
+	background: color-mix(in srgb, var(--color-green-deep) 84%, transparent);
+	backdrop-filter: blur(3px);
+}
+
+.lightbox img {
+	display: block;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 82vh;
+	background: var(--color-sand-2);
+}
+
+.lightbox-close {
+	position: absolute;
+	top: 0.75rem;
+	right: 0.75rem;
+	border-radius: 999px;
+	padding: 0.4rem 0.9rem;
+	background: color-mix(in srgb, var(--color-sand) 92%, transparent);
+	color: var(--color-ink);
+	font-size: 0.7rem;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	box-shadow: 0 6px 18px -10px rgb(0 0 0 / 0.6);
+	transition: background-color 300ms ease;
+}
+
+.lightbox-close:hover {
+	background: #fff;
+}
+
+/* The page behind the open lightbox does not scroll. */
+html.is-locked {
+	overflow: hidden;
+}
+
 /* Warm halo behind the hero, so the top of the page has depth without a photo. */
 .hero::before {
 	content: '';
@@ -273,5 +350,10 @@
 
 	[data-pulse] {
 		transform: none;
+	}
+
+	/* The carousel stops itself in the script; this only drops the fade. */
+	.hero-slide {
+		transition: none;
 	}
 }

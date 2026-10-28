@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { geo, hotel, images, locales, servicios, site } from '../data/site';
+import { geo, hotel, images, locales, localesGaleria, servicios, site } from '../data/site';
 
 /**
  * llms.txt (spec v2, llmstxt.org): H1 + blockquote summary, plain details, then
@@ -39,7 +39,7 @@ Datos verificables:
 
 ## Imágenes
 
-${hotel.galeria.map((photo) => `- [${photo.alt}](${photo.src})`).join('\n')}
+${[...localesGaleria, ...hotel.galeria].map((photo) => `- [${photo.alt}](${photo.src})`).join('\n')}
 
 ## Opcional
 

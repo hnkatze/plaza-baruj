@@ -27,7 +27,36 @@ const photo = (file: string, alt: string, width = 1080, height = 608): Photo => 
 });
 
 export const images = {
-	fachada: photo('FachadaFrente.jpeg', 'Fachada de Plaza Baruj vista desde la calle.', 960, 540),
+	fachada: photo(
+		'locales/fachada-completa-angulo.jpeg',
+		'Fachada de Plaza Baruj en ángulo desde la calle, con las montañas al fondo.',
+		1600,
+		1200,
+	),
+	localFrente: photo(
+		'locales/local-vacio-frente.jpeg',
+		'Un local vacío visto desde la calle, con la persiana metálica abierta.',
+		1600,
+		1200,
+	),
+	localBalcon: photo(
+		'locales/local-frente-balcon.jpeg',
+		'Frente de un local vacío, con la puerta de madera del balcón arriba.',
+		1200,
+		1600,
+	),
+	localInterior: photo(
+		'locales/local-vacio-interior.jpeg',
+		'Interior de un local vacío, con el piso y las paredes terminados.',
+		1200,
+		1600,
+	),
+	localBano: photo(
+		'locales/bano-local.jpeg',
+		'Baño de un local, con zócalo damero, inodoro y lavamanos.',
+		1200,
+		1600,
+	),
 	cuarto1: photo('Cuarto_1.jpeg', 'Primera habitación de una de las unidades del hotel.'),
 	cuarto2: photo('Cuarto_2.jpeg', 'Segunda habitación de una de las unidades del hotel.'),
 	cama: photo('CamaCuarto.jpeg', 'Detalle de la cama dentro de una habitación.'),
@@ -42,7 +71,31 @@ export const images = {
 	),
 	cocina: photo('Cocina.jpeg', 'Cocina equipada de una unidad.'),
 	bano: photo('ToiletShower.jpeg', 'Baño de una unidad, con toilet y ducha.'),
+	fachadaCalle: photo(
+		'locales/fachada-completa-calle.jpeg',
+		'Fachada de Plaza Baruj de frente, con los seis locales y las unidades de arriba.',
+		1600,
+		1200,
+	),
 } satisfies Record<string, Photo>;
+
+/** A hero slide: the photo it shows plus the one-line caption under the frame. */
+export interface HeroFoto extends Photo {
+	caption: string;
+}
+
+/**
+ * The hero carousel. Ordered as the visit reads the building: the street, the
+ * ground floor, then the hotel upstairs. The first photo is the one that loads
+ * eagerly, so keep the facade first.
+ */
+export const heroFotos: HeroFoto[] = [
+	{ ...images.fachada, caption: 'La plaza desde la calle' },
+	{ ...images.fachadaCalle, caption: 'Seis locales, cinco unidades' },
+	{ ...images.localFrente, caption: 'Los locales se entregan vacíos' },
+	{ ...images.salaEntrada, caption: 'La sala de una unidad' },
+	{ ...images.cuarto1, caption: 'Dos habitaciones por unidad' },
+];
 
 export interface SiteConfig {
 	name: string;
@@ -108,19 +161,80 @@ export interface Local {
 	rubro: string;
 	status: LocalStatus;
 	descripcion: string;
+	/** Photo shown as the preview of the unit. Missing until that unit is photographed. */
+	foto?: Photo;
 }
 
-// TODO(content): replace every entry with the real tenant name and category.
-export const locales: Local[] = Array.from({ length: 6 }, (_, index) => {
-	const number = String(index + 1).padStart(2, '0');
-	return {
-		slug: `local-${number}`,
-		nombre: `Local ${number}`,
+/**
+ * TODO(content): replace every entry with the real tenant name and category, and
+ * confirm which photo belongs to which unit. The four photos below are assigned in
+ * the order the ground floor was shot, not verified unit by unit: correct `foto`
+ * once the owner identifies them. Locals 05 and 06 have no photo yet.
+ */
+export const locales: Local[] = [
+	{
+		slug: 'local-01',
+		nombre: 'Local 01',
 		rubro: 'Por confirmar',
-		status: 'por-confirmar' as LocalStatus,
+		status: 'por-confirmar',
 		descripcion: 'Planta baja, con acceso directo desde la calle.',
-	};
-});
+		foto: images.localFrente,
+	},
+	{
+		slug: 'local-02',
+		nombre: 'Local 02',
+		rubro: 'Por confirmar',
+		status: 'por-confirmar',
+		descripcion: 'Planta baja, con acceso directo desde la calle.',
+		foto: images.localBalcon,
+	},
+	{
+		slug: 'local-03',
+		nombre: 'Local 03',
+		rubro: 'Por confirmar',
+		status: 'por-confirmar',
+		descripcion: 'Planta baja, con acceso directo desde la calle.',
+		foto: images.localInterior,
+	},
+	{
+		slug: 'local-04',
+		nombre: 'Local 04',
+		rubro: 'Por confirmar',
+		status: 'por-confirmar',
+		descripcion: 'Planta baja, con acceso directo desde la calle.',
+		foto: images.localBano,
+	},
+	{
+		slug: 'local-05',
+		nombre: 'Local 05',
+		rubro: 'Por confirmar',
+		status: 'por-confirmar',
+		descripcion: 'Planta baja, con acceso directo desde la calle.',
+	},
+	{
+		slug: 'local-06',
+		nombre: 'Local 06',
+		rubro: 'Por confirmar',
+		status: 'por-confirmar',
+		descripcion: 'Planta baja, con acceso directo desde la calle.',
+	},
+];
+
+/**
+ * Photos of the ground floor as delivered (2026-10), collected from the locals that
+ * already have one. Derived on purpose: a local that gets a photo enters the gallery
+ * on its own, with no second list to keep in sync.
+ */
+export const localesGaleria: Photo[] = locales.flatMap((local) =>
+	local.foto ? [local.foto] : [],
+);
+
+/**
+ * The two facade shots the hero carousel also uses. They are repeated on purpose in
+ * the ground-floor gallery, which opens with the building seen from the street before
+ * showing the units inside.
+ */
+export const galeriaFachadas: Photo[] = [images.fachadaCalle, images.fachada];
 
 export interface Space {
 	titulo: string;
